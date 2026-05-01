@@ -61,5 +61,5 @@ const filtrationEl = document.querySelector(".filtration");
 
 filtrationEl.addEventListener("click", (event) => {
     const findProduct = searchEl.value;
-    products.incudes("findProduct.name");
+    products.incudes("findProduct");
 })
