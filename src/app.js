@@ -1,34 +1,52 @@
 const inputEl = document.querySelector("#bookmarkInput");
 const btnEl = document.querySelector("#addBookmarkBtn");
 const listEl = document.querySelector("#bookmarkList");
-const arr = [];
+
+
+const STORAGE_KEY = "inputValue";
+
+
+const bookArrey = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+createBookItems(bookArrey);
 
 btnEl.addEventListener("click", () => {
-    const data = {
-        value: inputEl.value
-    };
-    arr.push(data);
-    console.log(arr);
-    addObj(arr);
-});
+    const value = inputEl.value;
+    bookArrey.push(value);
+    savedData();
+    inputEl.value = "";
+    createBookItems(bookArrey);
+})
 
-function addObj(arr) {
-    const item = arr.map((item, index) => {
-        return `<li>
-                    <a href="$">${item.value}</a>
-                    <button type="button" data-index="${index}">Видалити</button>
+
+function createBookItems(arr) {
+    const item = arr.map((elem, index) => {
+        return `<li id="${index}">
+                    <a href="#">${elem}</a>
+                    <div>
+                    <button type="button">Видалити</button>
+                    </div>
                 </li>`;
     }).join("");
     listEl.innerHTML = item;
 }
 
+
 listEl.addEventListener("click", (event) => {
-    if (event.target.tagName === "BUTTON") {
-        const index = event.target.dataset.index;
-        arr.splice(index, 1);
-        addObj(arr);
+    if (event.target.nodeName !== "BUTTON") {
+        return
     }
-});
+    // const li = event.target.parentNode;
+    const li = event.target.closest("li")
+    const id = li.id;
+    bookArrey.splice(id, 1);
+    savedData();
+    createBookItems(bookArrey);
+})
+
+
+function savedData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(bookArrey));
+}
 
 // ==========================================================
 
@@ -47,19 +65,3 @@ const savedPassword = localStorage.getItem("password");
 
 nameEl.value = savedLogin;
 passwordEl.value = savedPassword
-
-// =========================================================
-
-import {products} from "./data";
-import template from "./products-template.hbs";
-
-const listRef = document.querySelector(".list");
-listRef.innerHTML = template({products});
-
-const searchEl = document.querySelector(".search");
-const filtrationEl = document.querySelector(".filtration");
-
-filtrationEl.addEventListener("click", (event) => {
-    const findProduct = searchEl.value;
-    products.incudes("findProduct");
-})
